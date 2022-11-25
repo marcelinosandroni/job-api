@@ -1,0 +1,14 @@
+services:
+  application:
+    container_name: app
+    build: .
+    volumes:
+      - .:/usr/src/app
+
+  database:
+    container_name: mongo
+    image: mongo
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: test
+      ME_CONFIG_MONGODB_ADMINPASSWORD: test
