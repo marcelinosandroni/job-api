@@ -1,10 +1,17 @@
+import { User, UserProperties } from "domain/entities/user.entity";
 import mongoose from "mongoose";
 import { UserModel } from "../models/user.model";
 
-export class MongoDbUserRepository {
+export class UserMongoDbRepository {
   repository = UserModel;
 
-  async getAll() {
-    return this.repository.find({});
+  async getAll(): UserProperties[] {
+    const userSchema = await this.repository.find({});
+    const user = userSchema[0];
+    return userSchema;
+  }
+
+  async save(user: User) {
+    await this.repository.create(user);
   }
 }

@@ -4,6 +4,9 @@ services:
     build: .
     volumes:
       - .:/usr/src/app
+    depends_on:
+      - database
+      - cache
 
   database:
     container_name: mongo
