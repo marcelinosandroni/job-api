@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 
 export class UniqueIdentifier extends ValueObject<string> {
   constructor(value: string) {
-    super(value);
+    super(value ?? UniqueIdentifier.generate());
   }
 
   static generate(): string {
@@ -11,8 +11,17 @@ export class UniqueIdentifier extends ValueObject<string> {
   }
 
   protected validate(): void {
-    if (!this.value) {
+    if (!UniqueIdentifier.isValid(this.value)) {
       throw new Error("Invalid unique identifier");
     }
+  }
+
+  static isValid(value: unknown): boolean {
+    const isValidUniqueIdentifier =
+      typeof value === "string" && value.length === 36;
+    if (!isValidUniqueIdentifier) {
+      return false;
+    }
+    return true;
   }
 }

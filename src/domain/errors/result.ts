@@ -1,0 +1,60 @@
+export class Result<Type = unknown> {
+  readonly isFailure = !this.value;
+  readonly isSuccess = !!this.value;
+
+  private constructor(readonly value: Type, readonly error?: Error | string) {
+    Object.freeze(this);
+  }
+
+  bind<Output = Type>(transformation: (input: Type) => Output): Result<Output> {
+    if (this.isFailure) {
+      return Result.failure(this.error);
+    }
+    return Result.from<Output>(transformation(this.value));
+  }
+
+  bindWithoutState<Output>(
+    transformation: (input: Type) => Output
+  ): Result<Type> {
+    if (this.isFailure) {
+      return Result.failure(this.error);
+    }
+    transformation(this.value);
+    return Result.from(this.value);
+  }
+
+  flat<Output = Type>(
+    transformation: (input: Type) => Result<Output>
+  ): Result<Output> {
+    if (this.isFailure) {
+      return Result.failure(this.error);
+    }
+    return transformation(this.value);
+  }
+
+  mapWith<Success, Failure>({
+    success,
+    failure,
+  }: {
+    success: (value: Type) => Success;
+    failure: (error?: Error | string) => Failure;
+  }): Success | Failure {
+    if (this.isFailure) {
+      return success(this.value);
+    }
+
+    return failure(this.error);
+  }
+
+  static from<Output>(value: Output): Result<Output> {
+    return value ? Result.success(value) : Result.failure("Value is null");
+  }
+
+  static success<Type = unknown>(value: Type): Result<Type> {
+    return new Result<Type>(value);
+  }
+
+  static failure<Type = unknown>(error?: Error | string): Result<Type> {
+    return new Result<Type>(null as Type, error);
+  }
+}

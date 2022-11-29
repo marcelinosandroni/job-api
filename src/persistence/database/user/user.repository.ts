@@ -1,8 +1,9 @@
+import { UserRepository } from "application/repositories/user-repository";
 import { User, UserProperties } from "domain/entities/user.entity";
 import mongoose from "mongoose";
 import { UserModel } from "../models/user.model";
 
-export class UserMongoDbRepository {
+export class UserMongoDbRepository implements UserRepository {
   repository = UserModel;
 
   async getAll(): UserProperties[] {

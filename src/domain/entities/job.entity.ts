@@ -11,7 +11,6 @@ interface JobProperties extends BaseEntityProperties {
 export class Job extends Entity<JobProperties> {
   constructor(properties: JobProperties) {
     super(properties);
-    const now = new Date();
   }
 
   static validator(properties: JobProperties): void {
