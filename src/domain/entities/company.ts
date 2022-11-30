@@ -1,6 +1,5 @@
-import { CompanyValidator } from "domain/validation/company-validator";
 import { Name } from "domain/value-objects/name.value-object";
-import { BaseEntityProperties, Entity } from "./base.entity";
+import { BaseEntityProperties, Entity } from "../primitives/entity";
 
 export interface CompanyProperties extends BaseEntityProperties {
   name: Name;
@@ -11,22 +10,16 @@ export interface CompanyProperties extends BaseEntityProperties {
 }
 
 export class Company extends Entity<CompanyProperties> {
-  constructor(properties: CompanyProperties) {
+  private constructor(properties: CompanyProperties) {
     super(properties);
-    Company.validator(properties);
+  }
+
+  static create(properties: CompanyProperties): Company {
     if (!properties.employeesAmount) {
       this.properties.employeesAmount = 0;
     }
-    if (typeof properties.active === "undefined") {
+    if (typeof properties.active !== "boolean") {
       this.properties.active = true;
-    }
-  }
-
-  static validator(properties: CompanyProperties): void {
-    const validator = new CompanyValidator();
-    const error = validator.validate(properties);
-    if (error) {
-      throw new Error(error.message);
     }
   }
 

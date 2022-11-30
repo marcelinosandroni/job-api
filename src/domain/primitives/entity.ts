@@ -1,11 +1,22 @@
 import { UniqueIdentifier } from "domain/value-objects/unique-identifier";
 
-export interface BaseEntityProperties {
-  id: UniqueIdentifier;
+export interface BaseEntityInput {
+  id?: UniqueIdentifier;
 }
 
-export abstract class Entity<Properties extends BaseEntityProperties> {
-  constructor(protected properties: Properties) {}
+export type BaseEntityProperties = Required<BaseEntityInput>;
+
+export abstract class Entity<Properties> {
+  protected properties: BaseEntityProperties & Properties;
+  protected isNew = false;
+
+  constructor(properties: BaseEntityInput & Properties) {
+    if (!properties.id) {
+      this.isNew = true;
+      properties.id = UniqueIdentifier.generate();
+    }
+    this.properties = properties as BaseEntityProperties & Properties;
+  }
 
   get id(): UniqueIdentifier {
     return this.properties.id;
@@ -23,11 +34,11 @@ export abstract class Entity<Properties extends BaseEntityProperties> {
   }
 
   toJson(): string {
-    return JSON.stringify(this.properties);
+    return JSON.stringify(this.properties, null, 2);
   }
 
   toString(): string {
-    return this.toJson();
+    return `[${this.constructor.name} Entity]`;
   }
 
   valueof(): Properties {

@@ -1,9 +1,9 @@
-import { BaseEntityProperties, Entity } from "domain/entities/base.entity";
-import { DomainEvent } from "domain/events/domain-event";
 import { EventEmitter } from "events";
+import { DomainEvent } from "./domain-event";
+import { BaseEntityInput, Entity } from "./entity";
 
 export abstract class AggregateRoot<
-  Type extends BaseEntityProperties
+  Type extends BaseEntityInput
 > extends Entity<Type> {
   protected readonly domainEvents = new EventEmitter();
 

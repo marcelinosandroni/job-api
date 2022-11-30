@@ -1,13 +1,13 @@
-import { ValueObject } from "./value-object";
 import { randomUUID } from "crypto";
+import { ValueObject } from "domain/primitives/value-object";
 
 export class UniqueIdentifier extends ValueObject<string> {
   constructor(value: string) {
     super(value ?? UniqueIdentifier.generate());
   }
 
-  static generate(): string {
-    return randomUUID();
+  static generate(): UniqueIdentifier {
+    return new UniqueIdentifier(randomUUID());
   }
 
   protected validate(): void {

@@ -1,5 +1,5 @@
-import { Request, Response, Router } from "express";
-import { adaptExpressRoute } from "main/adapters/express-route-adapter";
+import { Router } from "express";
+import { adaptExpressRoute } from "./../adapters/express-route-adapter";
 import { SignUpController } from "presentation/controllers/signup/signup";
 
 export default (router: Router): void => {

@@ -1,5 +1,5 @@
-import { User } from "domain/entities/user.entity";
-import { DomainEvent } from "./domain-event";
+import { User } from "domain/entities/user";
+import { DomainEvent } from "domain/primitives/domain-event";
 
 export class UserCreatedDomainEvent extends DomainEvent {
   constructor(public readonly user: User) {

@@ -3,8 +3,6 @@ export abstract class ValueObject<Type = unknown> {
     Object.freeze(this.value);
   }
 
-  protected abstract validate(): void;
-
   equals(valueObject: ValueObject<Type>): boolean {
     if (typeof this.value === "object") {
       return JSON.stringify(this.value) === JSON.stringify(valueObject.value);

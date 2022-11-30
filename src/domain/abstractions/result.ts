@@ -2,7 +2,7 @@ export class Result<Type = unknown> {
   readonly isFailure = !this.value;
   readonly isSuccess = !!this.value;
 
-  private constructor(readonly value: Type, readonly error?: Error | string) {
+  private constructor(readonly value: Type, readonly error?: Error) {
     Object.freeze(this);
   }
 
@@ -37,24 +37,26 @@ export class Result<Type = unknown> {
     failure,
   }: {
     success: (value: Type) => Success;
-    failure: (error?: Error | string) => Failure;
-  }): Success | Failure {
+    failure: (error: Error) => Failure;
+  }): Result<Success> {
     if (this.isFailure) {
-      return success(this.value);
+      return Result.failure(failure(this.error as Error));
     }
 
-    return failure(this.error);
+    return Result.success(success(this.value));
   }
 
   static from<Output>(value: Output): Result<Output> {
-    return value ? Result.success(value) : Result.failure("Value is null");
+    return value
+      ? Result.success(value)
+      : Result.failure(new Error("Value is null"));
   }
 
   static success<Type = unknown>(value: Type): Result<Type> {
     return new Result<Type>(value);
   }
 
-  static failure<Type = unknown>(error?: Error | string): Result<Type> {
+  static failure<Type = unknown>(error?: Error): Result<Type> {
     return new Result<Type>(null as Type, error);
   }
 }

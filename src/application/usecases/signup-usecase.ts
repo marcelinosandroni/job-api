@@ -1,26 +1,23 @@
-import { UserRespository } from "data/interfaces/user-repository";
-import { User, UserProperties } from "domain/entities/user.entity";
-import { randomUUID } from "crypto";
-import { UseCase } from "domain/usecases/usecase";
-import { Result } from "domain/errors/result";
+import { UserRepository } from "application/repositories/user-repository";
+import { Result } from "domain/abstractions/result";
+import { User, UserInput, UserProperties } from "domain/entities/user";
+import { UseCase } from "domain/primitives/usecase";
 
-interface Input {
-  name: string;
-  email: string;
-  password: string;
-}
+// Param must be valided on the outer edge of the application [presentation]
+type Input = UserInput;
 
-type Output = UserProperties | Error | undefined | string;
+// Result is either a valid created user or a error [domain or persistence]
+type Output = UserProperties | Error;
 
 export class SignUpUseCase implements UseCase<Input, Output> {
-  constructor(private readonly repository: UserRespository) {}
+  constructor(private readonly repository: UserRepository) {}
 
-  async execute(input: Input): Promise<Output> {
-    return Result.from(User.create(input))
+  async execute(input: UserInput): Promise<Output> {
+    return User.create(input)
       .bindWithoutState(this.repository.save)
       .mapWith({
         success: (user) => user.toObject(),
-        failure: (error) => new Error(error?.message || error || "default"),
+        failure: (error) => error,
       });
   }
 }
