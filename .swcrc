@@ -4,7 +4,10 @@
       "syntax": "typescript",
       "tsx": false,
       "decorators": false,
-      "dynamicImport": false
+      "dynamicImport": true,
+      "paths": {
+      "presentation/*": ["./presentation/*"]
+      }
     }
   },
   "module": {
